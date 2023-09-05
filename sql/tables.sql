@@ -1,0 +1,8 @@
+CREATE TABLE development.users (
+	user_id SERIAL PRIMARY KEY,
+	username VARCHAR(255) NOT NULL UNIQUE,
+	first_name VARCHAR(255) NOT NULL,
+	role VARCHAR(6) NOT NULL,
+	password VARCHAR(255) NOT NULL,
+	salt VARCHAR(16) NOT NULL
+);

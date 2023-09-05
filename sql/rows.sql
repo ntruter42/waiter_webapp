@@ -1,0 +1,2 @@
+INSERT INTO development.users (username, first_name, role, password, salt) VALUES ('ntruter42', 'Nicholas', 'admin', 'password123', '123');
+INSERT INTO development.users (username, first_name, role, password, salt) VALUES ('emusk69', 'Elon', 'waiter', 'tesla123', '123');
