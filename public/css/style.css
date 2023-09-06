@@ -134,6 +134,10 @@ nav {
 	margin: auto;
 }
 
+.center-text {
+	text-align: center;
+}
+
 /********** DASHBOARD **********/
 
 .day {

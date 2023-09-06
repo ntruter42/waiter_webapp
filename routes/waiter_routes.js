@@ -65,11 +65,72 @@ router.post('/login', async (req, res) => {
 	res.redirect('/');
 });
 
-router.post('/logout', async (req, res) => {
+router.get('/signup', (req, res) => {
+	const message = {
+		text: req.flash('error')[0] || '',
+		type: 'error'
+	};
+
+	const nav = [{
+		text: 'Home',
+		link: '/'
+	}, {
+		text: 'Dashboard',
+		link: `/${req.session.role}/dashboard`
+	}, {
+		text: 'Sign In',
+		link: '/login'
+	}]
+
+	const curr_user = {
+		id: req.session.uid,
+		name: req.session.user,
+		role: req.session.role
+	}
+
+	res.render('signup', {
+		title: "Sign Up",
+		nav,
+		curr_user,
+		message
+	});
+});
+
+router.post('/signup', async (req, res) => {
+	const new_user = {
+		username: req.body.username,
+		first_name: req.body.first_name,
+		last_name: req.body.last_name,
+		role: req.body.role,
+		password: req.body.password,
+		salt: 123
+	}
+	const confirm = req.body.confirm_password;
+	const user_data = await services.getUser(new_user.username);
+
+	if (user_data) {
+		req.flash('error', "The username already exists");
+		req.session.role = null;
+		res.redirect('/signup');
+	} else if (new_user.password !== confirm) {
+		req.flash('error', "Passwords don't match");
+		req.session.role = null;
+		res.redirect('/signup');
+	} else {
+		await services.addUser(new_user);
+		res.redirect('/');
+	}
+});
+
+router.get('/logout', async (req, res) => {
 	req.session.uid = null;
 	req.session.user = null;
 	req.session.role = null;
 
+	res.redirect('/');
+});
+
+router.post('/logout', async (req, res) => {
 	res.redirect('/');
 });
 
@@ -200,7 +261,7 @@ router.get('/waiter/dashboard', async (req, res) => {
 });
 
 router.get('/undefined/dashboard', async (req, res) => {
-	req.flash('error', "Login to view dashboard");
+	req.flash('error', "Login to view your dashboard");
 
 	res.redirect('/login');
 });
