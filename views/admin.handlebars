@@ -1,3 +1,22 @@
 <div class="flex col max-size container">
-	<h1 class="center">ADMIN</h1>
+	<h1 class="center">{{title}} Dashboard - {{admin}}</h1>
+
+	<h2 class="center">Week {{week}} - Availability Schedule</h2>
+	<div class="flex row container week">
+
+		{{#each days}}
+		<div class="flex even col center container {{status}} day">
+			<h3>{{day_name}}</h3>
+
+			<div class="flex col waiters">
+
+				{{#each waiters}}
+				<span>{{first_name}} {{last_name}}</span>
+				{{/each}}
+
+			</div>
+		</div>
+		{{/each}}
+
+	</div>
 </div>

@@ -1,3 +1,10 @@
 <div class="flex col max-size container">
-	<h1 class="center">WAITER</h1>
+	<h1 class="center">{{title}} Dashboard - {{waiter}}</h1>
+
+	<h2 class="center">Week {{week}} - Set Your Availability</h2>
+	<form class="flex row container week" action="/add" method="post">
+		{{#each days}}
+		<button type="submit" formaction="/add/{{day_id}}">{{day_name}}</button>
+		{{/each}}
+	</form>
 </div>

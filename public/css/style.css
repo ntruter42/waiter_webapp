@@ -8,11 +8,11 @@
 	--primary-accent: #7600ff;
 	--secondary-accent: #ffa0a0;
 
-	--error-bg: #fcc;
+	--error-bg: #e88c;
 	--error-fg: #e00;
-	--warning-bg: #edc;
+	--warning-bg: #fc8c;
 	--warning-fg: #f80;
-	--success-bg: #cdc;
+	--success-bg: #8c8c;
 	--success-fg: #0a0;
 
 	--plate-border: 0.0625em;
@@ -110,6 +110,10 @@ button:active {
 	align-items: center;
 }
 
+.flex.even {
+	flex: 1;
+}
+
 .center {
 	text-align: center;
 	margin-inline: auto;
@@ -118,6 +122,87 @@ button:active {
 .middle {
 	margin: auto;
 }
+
+/********** DASHBOARD **********/
+
+.day {
+	background: #fff4;
+	border: 1px solid var(--secondary-fg);
+	border-radius: 0.5rem;
+}
+
+.day.booked {
+	background: var(--success-bg);
+}
+
+.day.overbooked {
+	background: var(--warning-bg);
+}
+
+.day.underbooked {
+	background: var(--error-bg);
+}
+
+/********** MESSAGES **********/
+
+.message {
+	border-radius: 0.5em;
+	border: var(--message-border) solid black;
+
+	width: fit-content;
+	max-width: 100%;
+	padding: 0.5em 1em;
+}
+
+.message.error {
+	background: var(--error-bg);
+	color: var(--error-fg);
+	border: var(--message-border) solid var(--error-fg);
+}
+
+.message.warning {
+	background: var(--warning-bg);
+	color: var(--warning-fg);
+	border: var(--message-border) solid var(--warning-fg);
+}
+
+.message.success {
+	background: var(--success-bg);
+	color: var(--success-fg);
+	border: var(--message-border) solid var(--success-fg);
+}
+
+/********** Transitions / Animations **********/
+
+.fade-in {
+	animation: fade-in 1s;
+}
+
+.fade-out {
+	animation: fade-out 1s;
+}
+
+@keyframes fade-out {
+	from {
+		opacity: 1;
+	}
+
+	to {
+		opacity: 0;
+	}
+}
+
+@keyframes fade-in {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+/********** FUNCTIONALITY **********/
 
 .invisible {
 	opacity: 0;
