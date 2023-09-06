@@ -56,6 +56,11 @@ export default function (db, schema) {
 		await db.none(query + values);
 	}
 
+	async function resetAssignments() {
+		const query = `TRUNCATE TABLE ${schema}.assignments`;
+		await db.none(query);
+	}
+
 	return {
 		getUser,
 		getWaiters,
@@ -64,6 +69,7 @@ export default function (db, schema) {
 		getUserAssignments,
 		setDay,
 		unsetDay,
-		addUser
+		addUser,
+		resetAssignments
 	};
 };

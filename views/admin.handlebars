@@ -17,4 +17,18 @@
 		{{/each}}
 
 	</div>
+	<form class="center" action="/reset" method="post">
+		<button type="submit" name="reset" id="reset">START NEW WEEK</button>
+	</form>
+
+	<div class="invisible">I</div>
+	<div class="invisible">L</div>
+	<div class="invisible">Y</div>
+
+	<h2 class="center">Waiters Available</h2>
+	<div class="flex col center waiters">
+		{{#each waiters}}
+		<div>{{first_name}} {{last_name}} ({{username}})</div>
+		{{/each}}
+	</div>
 </div>

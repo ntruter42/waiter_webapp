@@ -201,6 +201,7 @@ router.get('/admin/dashboard', async (req, res) => {
 		nav,
 		curr_user,
 		days,
+		waiters,
 		week: (new Date()).getWeek()
 	});
 });
@@ -264,6 +265,18 @@ router.get('/undefined/dashboard', async (req, res) => {
 	req.flash('error', "Login to view your dashboard");
 
 	res.redirect('/login');
+});
+
+router.get('/null/dashboard', async (req, res) => {
+	req.flash('error', "Login to view your dashboard");
+
+	res.redirect('/login');
+});
+
+router.post('/reset', async (req, res) => {
+	await services.resetAssignments();
+	
+	res.redirect('/admin/dashboard');
 });
 
 export default router;
