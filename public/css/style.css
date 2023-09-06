@@ -72,6 +72,13 @@ button:active {
 	filter: brightness(0.5);
 }
 
+nav {
+	background: var(--secondary-bg);
+
+	height: 2rem;
+	width: 100%;
+}
+
 .max-size {
 	width: calc(100% - 2rem);
 	height: 100%;
@@ -104,6 +111,10 @@ button:active {
 
 .flex.justify {
 	justify-content: center;
+}
+
+.flex.between {
+	justify-content: space-between;
 }
 
 .flex.align {

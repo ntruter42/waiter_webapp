@@ -1,3 +1,4 @@
+import session from 'express-session';
 import { services } from '../index.js';
 import express from 'express';
 const router = express.Router();
@@ -22,8 +23,27 @@ router.get('/login', (req, res) => {
 		type: 'error'
 	};
 
+	const nav = [{
+		text: 'Home',
+		link: '/'
+	}, {
+		text: 'Dashboard',
+		link: `/${req.session.role}/dashboard`
+	}, {
+		text: 'Sign Up',
+		link: '/signup'
+	}]
+
+	const curr_user = {
+		id: req.session.uid,
+		name: req.session.user,
+		role: req.session.role
+	}
+
 	res.render('login', {
 		title: "Sign In",
+		nav,
+		curr_user,
 		message
 	});
 });
@@ -34,9 +54,9 @@ router.post('/login', async (req, res) => {
 	const user_data = await services.getUser(username, password);
 
 	if (user_data) {
-		req.session.uid = user_data.user_id || null;
-		req.session.user = `${user_data.first_name} ${user_data.last_name}` || null;
-		req.session.role = user_data.role || null;
+		req.session.uid = user_data.user_id;
+		req.session.user = `${user_data.first_name} ${user_data.last_name}`;
+		req.session.role = user_data.role;
 	} else {
 		req.flash('error', "The username or password entered is incorrect");
 		req.session.role = null;
@@ -45,19 +65,29 @@ router.post('/login', async (req, res) => {
 	res.redirect('/');
 });
 
-router.post('/add/:day_id', async (req, res) => {
-	await services.setDay(req.session.uid, req.params.day_id);
+router.post('/logout', async (req, res) => {
+	req.session.uid = null;
+	req.session.user = null;
+	req.session.role = null;
 
+	res.redirect('/');
+});
+
+router.post('/set/:day_id', async (req, res) => {
+	await services.setDay(req.session.uid, req.params.day_id);
 	res.redirect('/waiter/dashboard');
 });
 
-router.post('/remove/:day_id', async (req, res) => {
+router.post('/unset/:day_id', async (req, res) => {
 	await services.unsetDay(req.session.uid, req.params.day_id);
-
 	res.redirect('/waiter/dashboard');
 });
 
 router.get('/admin/dashboard', async (req, res) => {
+	if (!req.session.role) {
+		res.redirect('/login');
+	}
+
 	const waiters = await services.getWaiters();
 	const days = await services.getDays();
 	const assignments = await services.getAssignments();
@@ -88,25 +118,47 @@ router.get('/admin/dashboard', async (req, res) => {
 		return Math.ceil(dayOfYear / 7)
 	};
 
+	const nav = [{
+		text: 'Home',
+		link: '/'
+	}, {
+		text: 'Dashboard',
+		link: `/${req.session.role}/dashboard`
+	}, {
+		text: 'Log Out',
+		link: '/logout'
+	}]
+
+	const curr_user = {
+		id: req.session.uid,
+		name: req.session.user,
+		role: req.session.role
+	}
+
 	res.render('admin', {
-		title: 'Admin',
-		admin: req.session.user,
+		title: 'Admin Dashboard',
+		nav,
+		curr_user,
 		days,
 		week: (new Date()).getWeek()
 	});
 });
 
 router.get('/waiter/dashboard', async (req, res) => {
+	if (!req.session.role) {
+		res.redirect('/login');
+	}
+
 	const days = await services.getDays();
 	const assignments = await services.getUserAssignments(req.session.uid);
 
 	days.forEach(day => {
 		day.status = '';
-		day.action = 'add';
+		day.action = 'set';
 		assignments.forEach(assignment => {
 			if (assignment.day_id === day.day_id) {
 				day.status = 'booked';
-				day.action = 'remove';
+				day.action = 'unset';
 			}
 		});
 
@@ -121,12 +173,36 @@ router.get('/waiter/dashboard', async (req, res) => {
 		return Math.ceil(dayOfYear / 7)
 	};
 
+	const nav = [{
+		text: 'Home',
+		link: '/'
+	}, {
+		text: 'Dashboard',
+		link: `/${req.session.role}/dashboard`
+	}, {
+		text: 'Log Out',
+		link: '/logout'
+	}]
+
+	const curr_user = {
+		id: req.session.uid,
+		name: req.session.user,
+		role: req.session.role
+	}
+
 	res.render('waiter', {
-		title: 'Waiter',
-		waiter: req.session.user,
+		title: 'Waiter Dashboard',
+		nav,
+		curr_user,
 		days,
 		week: (new Date()).getWeek()
 	});
+});
+
+router.get('/undefined/dashboard', async (req, res) => {
+	req.flash('error', "Login to view dashboard");
+
+	res.redirect('/login');
 });
 
 export default router;
