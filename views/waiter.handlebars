@@ -4,7 +4,7 @@
 	<h2 class="center">Week {{week}} - Set Your Availability</h2>
 	<form class="flex row container week" action="/add" method="post">
 		{{#each days}}
-		<button type="submit" formaction="/add/{{day_id}}">{{day_name}}</button>
+		<button class="flex even col center container {{status}} day" type="submit" formaction="/{{action}}/{{day_id}}">{{day_name}}</button>
 		{{/each}}
 	</form>
 </div>

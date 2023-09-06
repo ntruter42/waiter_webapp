@@ -20,7 +20,7 @@ app.use(session({
 	secret: "secret42",
 	resave: false,
 	saveUninitialized: true,
-	cookie: { maxAge: 60000 }
+	cookie: { maxAge: 3600000 }
 }));
 app.engine('handlebars', engine({
 	defaultLayout: 'main',

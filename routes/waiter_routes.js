@@ -45,6 +45,18 @@ router.post('/login', async (req, res) => {
 	res.redirect('/');
 });
 
+router.post('/add/:day_id', async (req, res) => {
+	await services.setDay(req.session.uid, req.params.day_id);
+
+	res.redirect('/waiter/dashboard');
+});
+
+router.post('/remove/:day_id', async (req, res) => {
+	await services.unsetDay(req.session.uid, req.params.day_id);
+
+	res.redirect('/waiter/dashboard');
+});
+
 router.get('/admin/dashboard', async (req, res) => {
 	const waiters = await services.getWaiters();
 	const days = await services.getDays();
@@ -89,24 +101,31 @@ router.get('/waiter/dashboard', async (req, res) => {
 	const assignments = await services.getUserAssignments(req.session.uid);
 
 	days.forEach(day => {
-		day.waiters = [];
+		day.status = '';
+		day.action = 'add';
 		assignments.forEach(assignment => {
 			if (assignment.day_id === day.day_id) {
-				day.waiters.push(waiters.find(waiter => waiter.user_id === assignment.waiter_id));
+				day.status = 'booked';
+				day.action = 'remove';
 			}
-		})
-		if (day.waiters.length === 3) {
-			day.status = 'booked';
-		} else if (day.waiters.length > 3) {
-			day.status = 'overbooked';
-		} else {
-			day.status = 'underbooked';
-		}
+		});
+
 	});
+
+	// TODO: clean up getWeek function
+	// retrieved directly from StackOverflow user - alias51
+	Date.prototype.getWeek = function () {
+		var first = new Date(this.getFullYear(), 0, 1);
+		var today = new Date(this.getFullYear(), this.getMonth(), this.getDate());
+		var dayOfYear = ((today - first + 86400000) / 86400000);
+		return Math.ceil(dayOfYear / 7)
+	};
 
 	res.render('waiter', {
 		title: 'Waiter',
-		days
+		waiter: req.session.user,
+		days,
+		week: (new Date()).getWeek()
 	});
 });
 

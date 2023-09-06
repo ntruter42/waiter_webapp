@@ -29,13 +29,19 @@ export default function (db, schema) {
 
 	async function getUserAssignments(waiter_id) {
 		const query = `SELECT * FROM ${schema}.assignments`;
-
-		let clause = '';
-		if (waiter_id) {
-			clause = ` WHERE waiter_id = '${waiter_id}'`;
-		}
-
+		const clause = ` WHERE waiter_id = '${waiter_id}'`;
 		return await db.manyOrNone(query + clause);
+	}
+
+	async function setDay(waiter_id, day_id) {
+		const query = `INSERT INTO ${schema}.assignments (waiter_id, day_id) VALUES (${waiter_id}, ${day_id})`;
+		return await db.none(query);
+	}
+
+	async function unsetDay(waiter_id, day_id) {
+		const query = `DELETE FROM ${schema}.assignments`;
+		const clause = ` WHERE waiter_id = ${waiter_id} AND day_id = ${day_id}`;
+		return await db.none(query + clause);
 	}
 
 	return {
@@ -43,6 +49,8 @@ export default function (db, schema) {
 		getWaiters,
 		getDays,
 		getAssignments,
-		getUserAssignments
+		getUserAssignments,
+		setDay,
+		unsetDay
 	};
 };
