@@ -1,10 +1,15 @@
-<div class="flex col max-size container">
-	<h1 class="center">{{title}} - {{curr_user.name}}</h1>
-
-	<h2 class="center">Week {{week}} - Set Your Availability</h2>
-	<form class="flex row container week" action="/add" method="post">
-		{{#each days}}
-		<button class="flex even col center container {{status}} day" type="submit" formaction="/{{action}}/{{day_id}}">{{day_name}}</button>
-		{{/each}}
+<div class="flex col gap align view container">
+	<div class="flex col gap justify container waiter">
+		<div>Full name: <span>{{waiter.full_name}}</span></div>
+		<div>Username: <span>{{waiter.username}}</span></div>
+		<div>User ID: <span>{{waiter.user_id}}</span></div>
+		<div class="flex row gap container days">
+			{{#each waiter.days}}
+			<div>{{this}}</div>
+			{{/each}}
+		</div>
+	</div>
+	<form action="admin/waiters/remove/{{waiter.user_id}}" method="post">
+		<button type="submit" name="remove">REMOVE WAITER</button>
 	</form>
 </div>

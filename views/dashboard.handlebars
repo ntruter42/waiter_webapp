@@ -1,0 +1,54 @@
+<div class="flex col gap align view container">
+
+	{{!-------------------- ADMIN DASHBOARD ------------------}}
+
+	{{#if admin}}
+	<h1>{{title}} - {{user.full_name}}</h1>
+
+	<h2>Week {{week}} - Availability Schedule</h2>
+
+	<div class="flex row gap key">
+		<span class="center container booked day">Booked</span>
+		<span class="center container overbooked day">Overbooked</span>
+		<span class="center container underbooked day">Underbooked</span>
+	</div>
+
+	<div class="flex row gap wrap justify container week">
+
+		{{#each days}}
+		<div class="flex col gap center container {{status}} day">
+			<h3>{{day_name}}</h3>
+
+			<div class="flex col waiters">
+				{{#each waiters}}
+				<span class="waiter">{{this}}</span>
+				{{/each}}
+			</div>
+		</div>
+		{{/each}}
+
+	</div>
+	<form action="/reset" method="post">
+		<button type="submit" name="reset">START NEW WEEK</button>
+	</form>
+	{{/if}}
+
+	{{!-------------------- WAITER DASHBOARD ------------------}}
+
+	{{#if waiter}}
+	<h1>{{title}} - {{user.full_name}}</h1>
+
+	{{#if message.text}}
+	<div class="{{message.type}} message">{{message.text}}</div>
+	{{/if}}
+
+	<h2>Week {{week}} - Set Your Availability</h2>
+	<form class="flex row gap wrap justify container week" action="/add" method="post">
+		{{#each days}}
+		<button class="container {{status}} day" type="submit"
+			formaction="/waiter/{{action}}/{{day_id}}">{{day_name}}</button>
+		{{/each}}
+	</form>
+	{{/if}}
+
+</div>

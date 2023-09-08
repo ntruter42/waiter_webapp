@@ -1,10 +1,9 @@
-<div class="flex col justify max-size container">
+<div class="flex col justify view container">
 	<h1 class="center">{{title}}</h1>
-
 
 	<form class="flex col center container" action="/signup" method="post">
 		{{#if message.text}}
-		<div class="center {{message.type}} message">{{message.text}}</div>
+		<div class="fade-in center {{message.type}} message">{{message.text}}</div>
 		{{/if}}
 
 		<label for="user_name">Select type of user</label>
@@ -12,14 +11,19 @@
 			<option value="admin">Admin</option>
 			<option value="waiter">Waiter</option>
 		</select>
+
 		<label for="user_name">First name</label>
 		<input class="center" type="text" name="first_name" id="first_name" autocomplete="off" required>
+
 		<label for="user_name">Last name</label>
 		<input class="center" type="text" name="last_name" id="last_name" autocomplete="off" required>
+
 		<label for="user_name">Create a username</label>
 		<input class="center" type="text" name="username" id="username" autocomplete="off" required>
+
 		<label for="user_pass">New password</label>
 		<input class="center" type="password" name="password" id="password" autocomplete="off" required>
+
 		<label for="user_pass">Confirm new password</label>
 		<input class="center" type="password" name="confirm_password" id="confirm_password" autocomplete="off" required>
 

@@ -1,26 +1,21 @@
-<div class="flex col justify max-size container">
-	<h1 class="center">{{title}}</h1>
+<div class="flex col gap align justify view container">
+	<h1>{{title}}</h1>
 
-
-	<form class="flex col center container" action="/login" method="post">
+	<form class="flex col gap align" action="/login" method="post">
 		{{#if message.text}}
-		<div class="center {{message.type}} message">{{message.text}}</div>
+		<div class="{{message.type}} message">{{message.text}}</div>
 		{{/if}}
 
-		<label for="user_name">Username</label>
-		<input class="center" type="text" name="username" id="user_name" autocomplete="off" required>
-		<label for="user_pass">Password</label>
-		<input class="center" type="password" name="password" id="user_pass" autocomplete="off" required>
+		<label for="username">Username</label>
+		<input class="center" type="text" name="username" autocomplete="off" required>
 
-		<button class="center" type="submit">LOGIN</button>
+		<label for="password">Password</label>
+		<input class="center" type="password" name="password" autocomplete="off" required>
 
-		<div>
-			<span>Don't have an account? <a href="/signup">Create Account</a></span>
-		</div>
+		<button type="submit">LOGIN</button>
 	</form>
 
 	<div class="invisible">I</div>
 	<div class="invisible">L</div>
 	<div class="invisible">Y</div>
-	<div class="invisible"><3</div>
 </div>

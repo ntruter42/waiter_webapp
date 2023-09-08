@@ -3,17 +3,20 @@
 :root {
 	--primary-bg: #fff;
 	--primary-fg: #000;
-	--secondary-bg: #fffc;
-	--secondary-fg: #000;
-	--primary-accent: #7600ff;
-	--secondary-accent: #ffa0a0;
+	--secondary-bg: #fffa;
+	--secondary-fg: #000a;
 
-	--error-bg: #e88c;
-	--error-fg: #e00;
-	--warning-bg: #fc8c;
-	--warning-fg: #f80;
-	--success-bg: #8c8c;
-	--success-fg: #0a0;
+	--accent-1: #bed2e4ff;
+	--accent-2: #c2dcf0ff;
+	--accent-3: #d7e4f0ff;
+	--accent-4: #e4f9feff;
+
+	--error-bg: #e88a;
+	--error-fg: #c00;
+	--warning-bg: #fc8a;
+	--warning-fg: #c80;
+	--success-bg: #8c8a;
+	--success-fg: #0c0;
 
 	--plate-border: 0.0625em;
 	--message-border: 0.125em;
@@ -52,6 +55,26 @@ body {
 	width: 100%;
 }
 
+nav {
+	height: 2rem;
+	width: 100%;
+}
+
+nav a {
+	background: var(--secondary-bg);
+	color: var(--secondary-fg);
+}
+
+nav a:hover {
+	background: var(--secondary-fg);
+	color: var(--secondary-bg);
+}
+
+nav a:active {
+	background: var(--primary-fg);
+	color: var(--primary-bg);
+}
+
 button,
 input,
 select {
@@ -72,20 +95,12 @@ button:active {
 	filter: brightness(0.5);
 }
 
-nav {
-	background: var(--secondary-bg);
-
-	height: 2rem;
+.view {
 	width: 100%;
-}
-
-.max-size {
-	width: calc(100% - 2rem);
-	height: 100%;
+	height: calc(100% - 2rem);
 }
 
 .container {
-	gap: 0.5rem;
 	padding: 0.5rem;
 }
 
@@ -105,6 +120,10 @@ nav {
 	flex-direction: row;
 }
 
+.flex.gap {
+	gap: 0.5rem;
+}
+
 .flex.wrap {
 	flex-wrap: wrap;
 }
@@ -117,24 +136,19 @@ nav {
 	justify-content: space-between;
 }
 
+.flex.even {
+	justify-content: space-evenly;
+}
+
+.flex.stretch {
+	flex: 1;
+}
+
 .flex.align {
 	align-items: center;
 }
 
-.flex.even {
-	flex: 1;
-}
-
 .center {
-	text-align: center;
-	margin-inline: auto;
-}
-
-.middle {
-	margin: auto;
-}
-
-.center-text {
 	text-align: center;
 }
 
@@ -143,7 +157,10 @@ nav {
 .day {
 	background: #fff4;
 	border: 1px solid var(--secondary-fg);
-	border-radius: 0.5rem;
+	/* border-radius: 0.5rem; */
+
+	width: 12%;
+	min-width: 10rem;
 }
 
 .day.booked {

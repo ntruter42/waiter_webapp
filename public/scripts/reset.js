@@ -1,5 +1,11 @@
-document.querySelector('button[name = "reset"]').addEventListener('click', (event) => {
-	if (!window.confirm("Start new availability schedule?")) {
-		event.preventDefault();
+window.addEventListener('load', () => {
+	const reset = document.querySelector('button[name="reset"]');
+
+	if (reset) {
+		reset.addEventListener('click', (event) => {
+			if (!window.confirm("Are you sure you want to start a new week?")) {
+				event.preventDefault();
+			}
+		});
 	}
 });

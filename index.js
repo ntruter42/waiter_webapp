@@ -3,11 +3,16 @@ import { engine } from "express-handlebars";
 import bodyParser from "body-parser";
 import session from "express-session";
 import flash from "express-flash";
+import "dotenv/config";
 
-import database_config from './config/db_setup.js';
+import db_config from './config/db_setup.js';
+import db_services from "./services/waiter_services.js";
 import waiter_models from "./models/waiter_models.js";
-import waiter_services from "./services/waiter_services.js";
+
+import access_routes from './routes/access_routes.js';
+import admin_routes from './routes/admin_routes.js';
 import waiter_routes from './routes/waiter_routes.js';
+import error_routes from './routes/error_routes.js';
 
 const app = express();
 
@@ -17,10 +22,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(flash());
 app.use(session({
-	secret: "secret42",
+	secret: process.env.SESSION_SECRET,
 	resave: false,
-	saveUninitialized: true,
-	cookie: { maxAge: 3600000 }
+	saveUninitialized: false,
+	cookie: {}
 }));
 app.engine('handlebars', engine({
 	defaultLayout: 'main',
@@ -30,12 +35,16 @@ app.engine('handlebars', engine({
 app.set('view engine', 'handlebars');
 
 // INSTANCES
-const db = database_config();
+const db = db_config();
 const models = waiter_models();
-const services = waiter_services(db, process.env.NODE_ENV);
+const services = db_services(db, process.env.NODE_ENV);
 
 // ROUTES
-app.use('/', waiter_routes);
+app.use('/', access_routes);
+app.use('/waiter', waiter_routes);
+app.use('/admin', admin_routes);
+app.use('/undefined', error_routes);
+app.use('/null', error_routes);
 
 export { services };
 

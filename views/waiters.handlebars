@@ -1,0 +1,13 @@
+<div class="flex col gap align view container">
+	<div class="flex col gap justify container waiters">
+		{{#each waiters}}
+		{{!-- TODO: create 'waiter/:user_id' post and get routes --}}
+		<button class="center container waiter" type="submit"
+			formaction="/admin/waiter/{{user_id}}">{{full_name}}</button>
+		{{/each}}
+	</div>
+	<form action="admin/waiters/add" method="post">
+		{{!-- TODO: create 'waiters/add/' post and get routes --}}
+		<button type="submit" name="add">ADD WAITER</button>
+	</form>
+</div>
