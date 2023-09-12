@@ -71,8 +71,8 @@ export default function (db, schema) {
 	}
 
 	async function addUser(user) {
-		const query = `INSERT INTO ${schema}.users (username, first_name, last_name, role, password, salt)`;
-		const values = ` VALUES ('${user.username}', '${user.first_name}', '${user.last_name}', '${user.role}', '${user.password}', ${user.salt})`;
+		const query = `INSERT INTO ${schema}.users (username, full_name, role, password, salt)`;
+		const values = ` VALUES ('${user.username}', '${user.full_name}', '${user.role}', '${user.password}', '${user.salt}')`;
 		await db.none(query + values);
 	}
 
@@ -89,11 +89,14 @@ export default function (db, schema) {
 	};
 
 	return {
+		getUsers,
 		getUser: getUsers,
 		getWaiters,
+		getDays,
 		getDay: getDays,
 		getAssignments,
 		setDay,
+		unsetDays,
 		unsetDay: unsetDays,
 		addUser,
 		resetAssignments,

@@ -79,11 +79,11 @@ button,
 input,
 select {
 	outline: 1px solid var(--secondary-fg);
+	text-align: center;
 }
 
 button {
 	background: var(--secondary-bg);
-
 	padding: 0.25rem 0.5rem;
 }
 
@@ -93,6 +93,10 @@ button:hover {
 
 button:active {
 	filter: brightness(0.5);
+}
+
+select {
+	text-align-last: auto;
 }
 
 .view {
@@ -150,6 +154,10 @@ button:active {
 
 .center {
 	text-align: center;
+}
+
+.middle {
+	margin-inline: auto;
 }
 
 /********** DASHBOARD **********/

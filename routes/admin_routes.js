@@ -1,11 +1,10 @@
 import { Router } from 'express';
 import { services } from '../index.js';
+import { randomBytes } from 'crypto';
 const router = Router();
 
 router.get('/dashboard', async (req, res) => {
-	if (!req.session.role) {
-		res.redirect('/');
-	}
+	if (!req.session.role) { res.redirect('/') }
 
 	const assignments = await services.getAssignments('day_name, full_name');
 	const days = [
@@ -36,16 +35,16 @@ router.get('/dashboard', async (req, res) => {
 	});
 
 	const nav = [
-		{ text: 'Home', link: '/' },
 		{ text: 'Waiters', link: `/${req.session.role}/waiters` },
+		{ text: 'Add User', link: '/admin/waiters/add' },
 		{ text: 'Log Out', link: '/logout' }
-	]
+	];
 
 	const user = {
 		user_id: req.session.user_id,
 		full_name: req.session.full_name,
 		role: req.session.role
-	}
+	};
 
 	res.render('dashboard', {
 		title: 'Admin Dashboard',
@@ -59,7 +58,6 @@ router.get('/dashboard', async (req, res) => {
 
 router.post('/reset', async (req, res) => {
 	await services.resetAssignments();
-
 	res.redirect('/admin/dashboard');
 });
 
@@ -67,16 +65,16 @@ router.get('/waiters', async (req, res) => {
 	const waiters = await services.getWaiters();
 
 	const nav = [
-		{ text: 'Home', link: '/' },
 		{ text: 'Dashboard', link: `/${req.session.role}/dashboard` },
+		{ text: 'Add User', link: '/admin/waiters/add' },
 		{ text: 'Log Out', link: '/logout' }
-	]
+	];
 
 	const user = {
 		user_id: req.session.user_id,
 		full_name: req.session.full_name,
 		role: req.session.role
-	}
+	};
 
 	res.render('waiters', {
 		title: 'Waiters List',
@@ -86,12 +84,54 @@ router.get('/waiters', async (req, res) => {
 	});
 });
 
-router.post('/waiters/add', async (req, res) => {
-	res.redirect('/waiters/add');
+router.get('/waiters/add', (req, res) => {
+	const message = {
+		text: req.flash('error')[0] || '',
+		type: 'error'
+	};
+
+	const nav = [
+		{ text: 'Dashboard', link: `/${req.session.role}/dashboard` },
+		{ text: 'Waiters', link: '/admin/waiters' },
+		{ text: 'Logout', link: '/logout' }
+	]
+
+	const user = {
+		user_id: req.session.user_id,
+		full_name: req.session.full_name,
+		role: req.session.role
+	}
+
+	res.render('add', {
+		title: "Create User",
+		nav,
+		user,
+		message
+	});
 });
 
 router.post('/waiters/add', async (req, res) => {
-	res.redirect('/waiters/add');
+	const new_user = {
+		username: req.body.username,
+		full_name: req.body.full_name,
+		role: req.body.role,
+		password: req.body.password,
+		salt: randomBytes(8).toString('hex')
+	}
+	const confirm = req.body.confirm_password;
+	const user_data = await services.getUser(new_user.username);
+
+	if (user_data) {
+		req.flash('error', "The username already exists");
+		res.redirect('/admin/waiters/add');
+	} else if (new_user.password !== confirm) {
+		req.flash('error', "Passwords don't match");
+		res.redirect('/admin/waiters/add');
+	} else {
+		await services.addUser(new_user);
+		res.redirect('/admin/waiters');
+	}
+
 });
 
 export default router;

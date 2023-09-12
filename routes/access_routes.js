@@ -15,8 +15,7 @@ router.get('/', (req, res, next) => {
 router.get('/login', async (req, res) => {
 	const nav = [
 		{ text: 'Home', link: '/' },
-		{ text: 'Dashboard', link: `/${req.session.role}/dashboard` },
-		{ text: 'Sign Up', link: '/signup' }
+		{ text: 'Dashboard', link: `/${req.session.role}/dashboard` }
 	];
 
 	const user = {
@@ -53,59 +52,6 @@ router.post('/login', async (req, res) => {
 	}
 
 	res.redirect('/');
-});
-
-router.get('/signup', (req, res) => {
-	const message = {
-		text: req.flash('error')[0] || '',
-		type: 'error'
-	};
-
-	const nav = [{
-		text: 'Home',
-		link: '/'
-	}, {
-		text: 'Dashboard',
-		link: `/${req.session.role}/dashboard`
-	}, {
-		text: 'Sign In',
-		link: '/login'
-	}]
-
-	const user = {
-		user_id: req.session.user_id,
-		full_name: req.session.full_name,
-		role: req.session.role
-	}
-
-	res.render('signup', {
-		title: "Sign Up",
-		nav,
-		user,
-		message
-	});
-});
-
-router.post('/signup', async (req, res) => {
-	const new_user = {
-		username: req.body.username,
-		full_name: req.body.full_name,
-		role: req.body.role,
-		password: req.body.password,
-		salt: 123456789101112
-	}
-	const confirm = req.body.confirm_password;
-	const user_data = await services.getUser(new_user.username);
-
-	if (user_data) {
-		req.flash('error', "The username already exists");
-	} else if (new_user.password !== confirm) {
-		req.flash('error', "Passwords don't match");
-	} else {
-		await services.addUser(new_user);
-		res.redirect('/');
-	}
-	res.redirect('/signup');
 });
 
 router.get('/logout', async (req, res) => {
