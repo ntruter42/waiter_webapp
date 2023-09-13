@@ -75,6 +75,10 @@ nav a:active {
 	color: var(--primary-bg);
 }
 
+a {
+	color: inherit;
+}
+
 button,
 input,
 select {
@@ -94,6 +98,10 @@ button:hover {
 button:active {
 	filter: brightness(0.5);
 }
+
+/* .day button {
+	/* background: none; */
+} */
 
 select {
 	text-align-last: auto;

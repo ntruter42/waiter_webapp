@@ -1,4 +1,4 @@
-<div class="flex col gap align view container">
+<div class="flex col gap justify align view container">
 
 	{{!-------------------- ADMIN DASHBOARD ------------------}}
 
@@ -7,30 +7,37 @@
 
 	<h2>Week {{week}} - Availability Schedule</h2>
 
-	<div class="flex row gap wrap justify key">
-		<span class="center container booked day">Booked</span>
-		<span class="center container overbooked day">Overbooked</span>
-		<span class="center container underbooked day">Underbooked</span>
-	</div>
+	<form action="/unset" method="post">
+		<div class="flex row gap wrap justify container week">
+			{{#each days}}
+			<div class="flex col gap center container {{status}} day">
+				<h3>{{day_name}}</h3>
 
-	<div class="flex row gap wrap justify container week">
-
-		{{#each days}}
-		<div class="flex col gap center container {{status}} day">
-			<h3>{{day_name}}</h3>
-
-			<div class="flex col waiters">
-				{{#each waiters}}
-				<span class="waiter">{{this}}</span>
-				{{/each}}
+				<div class="flex col gap align waiters">
+					{{#each waiters}}
+					<a href="/admin/unset/{{../day_id}}/{{this.user_id}}"
+						onclick="return confirm('Remove {{this.full_name}} from {{../day_name}}?')" title="Click to remove {{this.full_name}} from {{../day_name}}">{{this.full_name}}</a>
+					{{!-- <button formaction="/admin/unset/{{day_name}}/{{this}}" class="waiter">{{this}}</button> --}}
+					{{/each}}
+				</div>
 			</div>
+			{{/each}}
 		</div>
-		{{/each}}
+	</form>
 
-	</div>
 	<form action="/reset" method="post">
 		<button type="submit" name="reset">START NEW WEEK</button>
 	</form>
+
+	<div class="flex row gap wrap justify container">
+		<div class="flex row gap wrap justify key">
+			<span class="center container">Key:</span>
+			<span class="center container booked day">Booked</span>
+			<span class="center container overbooked day">Overbooked</span>
+			<span class="center container underbooked day">Underbooked</span>
+			<span class="center container invisible">Key:</span>
+		</div>
+	</div>
 	{{/if}}
 
 	{{!-------------------- WAITER DASHBOARD ------------------}}

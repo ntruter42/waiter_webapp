@@ -1,59 +1,60 @@
 import { Router } from 'express';
-import { services } from '../index.js';
 import { randomBytes } from 'crypto';
+import { services } from '../index.js';
 const router = Router();
 
 router.get('/dashboard', async (req, res) => {
 	if (!req.session.role) { res.redirect('/') }
+	else {
+		const assignments = await services.getAssignments('day_name, full_name');
+		const days = [
+			{ day_name: 'Monday', day_id: 1 },
+			{ day_name: 'Tuesday', day_id: 2 },
+			{ day_name: 'Wednesday', day_id: 3 },
+			{ day_name: 'Thursday', day_id: 4 },
+			{ day_name: 'Friday', day_id: 5 },
+			{ day_name: 'Saturday', day_id: 6 },
+			{ day_name: 'Sunday', day_id: 7 }
+		];
 
-	const assignments = await services.getAssignments('day_name, full_name');
-	const days = [
-		{ day_name: 'Monday' },
-		{ day_name: 'Tuesday' },
-		{ day_name: 'Wednesday' },
-		{ day_name: 'Thursday' },
-		{ day_name: 'Friday' },
-		{ day_name: 'Saturday' },
-		{ day_name: 'Sunday' }
-	];
+		days.forEach(day => {
+			day.waiters = [];
+			assignments.forEach(assignment => {
+				if (assignment.day_name === day.day_name) {
+					day.waiters.push({ full_name: assignment.full_name, user_id: assignment.user_id });
+				}
+			})
 
-	days.forEach(day => {
-		day.waiters = [];
-		assignments.forEach(assignment => {
-			if (assignment.day_name === day.day_name) {
-				day.waiters.push(assignment.full_name);
+			if (day.waiters.length === 3) {
+				day.status = 'booked';
+			} else if (day.waiters.length > 3) {
+				day.status = 'overbooked';
+			} else {
+				day.status = 'underbooked';
 			}
-		})
+		});
 
-		if (day.waiters.length === 3) {
-			day.status = 'booked';
-		} else if (day.waiters.length > 3) {
-			day.status = 'overbooked';
-		} else {
-			day.status = 'underbooked';
-		}
-	});
+		const nav = [
+			{ text: 'Waiters', link: `/${req.session.role}/waiters` },
+			{ text: 'Add User', link: '/admin/waiters/add' },
+			{ text: 'Log Out', link: '/logout' }
+		];
 
-	const nav = [
-		{ text: 'Waiters', link: `/${req.session.role}/waiters` },
-		{ text: 'Add User', link: '/admin/waiters/add' },
-		{ text: 'Log Out', link: '/logout' }
-	];
+		const user = {
+			user_id: req.session.user_id,
+			full_name: req.session.full_name,
+			role: req.session.role
+		};
 
-	const user = {
-		user_id: req.session.user_id,
-		full_name: req.session.full_name,
-		role: req.session.role
-	};
-
-	res.render('dashboard', {
-		title: 'Admin Dashboard',
-		admin: true,
-		nav,
-		user,
-		days,
-		week: services.week()
-	});
+		res.render('dashboard', {
+			title: 'Admin Dashboard',
+			admin: true,
+			nav,
+			user,
+			days,
+			week: services.week()
+		});
+	}
 });
 
 router.post('/reset', async (req, res) => {
@@ -62,26 +63,29 @@ router.post('/reset', async (req, res) => {
 });
 
 router.get('/waiters', async (req, res) => {
-	const waiters = await services.getWaiters();
+	if (!req.session.role) { res.redirect('/') }
+	else {
+		const waiters = await services.getWaiters();
 
-	const nav = [
-		{ text: 'Dashboard', link: `/${req.session.role}/dashboard` },
-		{ text: 'Add User', link: '/admin/waiters/add' },
-		{ text: 'Log Out', link: '/logout' }
-	];
+		const nav = [
+			{ text: 'Dashboard', link: `/${req.session.role}/dashboard` },
+			{ text: 'Add User', link: '/admin/waiters/add' },
+			{ text: 'Log Out', link: '/logout' }
+		];
 
-	const user = {
-		user_id: req.session.user_id,
-		full_name: req.session.full_name,
-		role: req.session.role
-	};
+		const user = {
+			user_id: req.session.user_id,
+			full_name: req.session.full_name,
+			role: req.session.role
+		};
 
-	res.render('waiters', {
-		title: 'Waiters List',
-		nav,
-		user,
-		waiters
-	});
+		res.render('waiters', {
+			title: 'Waiters List',
+			nav,
+			user,
+			waiters
+		});
+	}
 });
 
 router.get('/waiters/add', (req, res) => {
@@ -111,6 +115,8 @@ router.get('/waiters/add', (req, res) => {
 });
 
 router.post('/waiters/add', async (req, res) => {
+	if (!req.session.role) { res.redirect('/') }
+
 	const new_user = {
 		username: req.body.username,
 		full_name: req.body.full_name,
@@ -131,7 +137,11 @@ router.post('/waiters/add', async (req, res) => {
 		await services.addUser(new_user);
 		res.redirect('/admin/waiters');
 	}
+});
 
+router.post('/waiters/remove/:user_id', async (req, res) => {
+	await services.removeUser(req.params.user_id);
+	res.redirect('/admin/waiters');
 });
 
 export default router;

@@ -16,6 +16,6 @@ CREATE TABLE development.assignments (
 	user_id INT NOT NULL,
 	day_id INT NOT NULL,
 	PRIMARY KEY (user_id, day_id),
-	FOREIGN KEY (user_id) REFERENCES development.users(user_id),
-	FOREIGN KEY (day_id) REFERENCES development.days(day_id)
+	FOREIGN KEY (user_id) REFERENCES development.users(user_id) ON DELETE CASCADE,
+	FOREIGN KEY (day_id) REFERENCES development.days(day_id) ON DELETE CASCADE
 );

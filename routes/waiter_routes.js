@@ -3,9 +3,7 @@ import { services } from '../index.js';
 const router = Router();
 
 router.get('/dashboard', async (req, res) => {
-	if (!req.session.role) {
-		res.redirect('/');
-	}
+	if (!req.session.role) { res.redirect('/') }
 
 	const assignments = await services.getAssignments('day_name, full_name');
 	const days = [

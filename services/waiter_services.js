@@ -32,7 +32,7 @@ export default function (db, schema) {
 
 	async function getAssignments(columns, user_id, order_by) {
 		// Uncomment next line if user_id and day_id is needed
-		// if (columns) { columns += `${schema}.users.user_id, ${schema}.days.day_id, `; }
+		if (columns) { columns += `, ${schema}.users.user_id, ${schema}.days.day_id`; }
 
 		const query = `SELECT ${columns || '*'} FROM ${schema}.assignments`;
 		const join1 = ` JOIN ${schema}.days ON ${schema}.days.day_id = ${schema}.assignments.day_id`;
@@ -76,6 +76,14 @@ export default function (db, schema) {
 		await db.none(query + values);
 	}
 
+	async function removeUser(user_id) {
+		const query1 = `DELETE FROM ${schema}.assignments CASCADE WHERE user_id = ${user_id}`;
+		await db.none(query1);
+
+		const query2 = `DELETE FROM ${schema}.users CASCADE WHERE user_id = ${user_id}`;
+		await db.none(query2);
+	}
+
 	async function resetAssignments() {
 		const query = `TRUNCATE TABLE ${schema}.assignments`;
 		await db.none(query);
@@ -86,7 +94,7 @@ export default function (db, schema) {
 		const start = new Date(date.getFullYear(), 0, 1);
 		const days = Math.floor((date - start) / (24 * 60 * 60 * 1000));
 		return Math.ceil(days / 7);
-	};
+	}
 
 	return {
 		getUsers,
@@ -99,6 +107,7 @@ export default function (db, schema) {
 		unsetDays,
 		unsetDay: unsetDays,
 		addUser,
+		removeUser,
 		resetAssignments,
 		week
 	};

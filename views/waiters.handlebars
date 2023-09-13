@@ -1,9 +1,10 @@
-<div class="flex col gap align view container">
-	<div class="flex col gap justify container waiters">
+<div class="flex col gap justify align view container">
+	<h1>{{title}}</h1>
+
+	<form class="flex col gap justify container waiters" action="/remove" method="post">
 		{{#each waiters}}
 		{{!-- TODO: create 'waiter/:user_id' post and get routes --}}
-		<button class="center container waiter" type="submit"
-			formaction="/admin/waiter/{{user_id}}" title="Click to remove">{{full_name}}</button>
+		<button class="center container waiter" type="submit" formaction="/admin/waiters/remove/{{user_id}}" title="Click to remove {{full_name}} from roster" onclick="return confirm('Remove {{full_name}} and all assigned days from roster?')">{{full_name}}</button>
 		{{/each}}
-	</div>
+	</form>
 </div>
