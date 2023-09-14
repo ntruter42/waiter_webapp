@@ -144,4 +144,9 @@ router.post('/waiters/remove/:user_id', async (req, res) => {
 	res.redirect('/admin/waiters');
 });
 
+router.get('/unset/:day_id/:user_id', async (req, res) => {
+	await services.unsetDay(req.params.user_id, req.params.day_id);
+	res.redirect('/admin/dashboard');
+});
+
 export default router;
