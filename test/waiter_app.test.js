@@ -217,51 +217,55 @@ describe('Waiters Webapp', async function () {
 			assert.equal(expected2, result2);
 		});
 
-it('should get assignments for all waiters on all days from all tables', async function () {
-	const new_user_one = {
-		username: 'emusk69',
-		full_name: 'Elon Musk',
-		role: 'waiter',
-		password: await services.hash('tesla123')
-	}
-	await services.addUser(new_user_one);
-	await services.setDay(1, 1);
-	await services.setDay(1, 5);
+		it('should get assignments for all waiters on all days from all tables', async function () {
+			const new_user_one = {
+				username: 'emusk69',
+				full_name: 'Elon Musk',
+				role: 'waiter',
+				password: await services.hash('tesla123')
+			}
+			await services.addUser(new_user_one);
+			await services.setDay(1, 1);
+			await services.setDay(1, 5);
 
-	const new_user_two = {
-		username: 'lsu42',
-		full_name: 'Lisa Su',
-		role: 'waiter',
-		password: await services.hash('amd123')
-	}
-	await services.addUser(new_user_two);
-	await services.setDay(2, 1);
+			const new_user_two = {
+				username: 'lsu42',
+				full_name: 'Lisa Su',
+				role: 'waiter',
+				password: await services.hash('amd123')
+			}
+			await services.addUser(new_user_two);
+			await services.setDay(2, 1);
 
-	const expected = [{
-		user_id: 1,
-		day_id: 1,
-		day_name: 'Monday',
-		username: 'emusk69',
-		full_name: 'Elon Musk',
-		role: 'waiter'
-	}, {
-		user_id: 1,
-		day_id: 5,
-		day_name: 'Friday',
-		username: 'emusk69',
-		full_name: 'Elon Musk',
-		role: 'waiter'
-	}, {
-		user_id: 2,
-		day_id: 1,
-		day_name: 'Monday',
-		username: 'lsu42',
-		full_name: 'Lisa Su',
-		role: 'waiter'
-	}];
-	const result = await services.getAssignments();
-	assert.deepEqual(expected, result);
-});
+			const expected = [{
+				user_id: 1,
+				day_id: 1,
+				day_name: 'Monday',
+				username: 'emusk69',
+				full_name: 'Elon Musk',
+				role: 'waiter',
+				password: undefined
+			}, {
+				user_id: 1,
+				day_id: 5,
+				day_name: 'Friday',
+				username: 'emusk69',
+				full_name: 'Elon Musk',
+				role: 'waiter',
+				password: undefined
+			}, {
+				user_id: 2,
+				day_id: 1,
+				day_name: 'Monday',
+				username: 'lsu42',
+				full_name: 'Lisa Su',
+				role: 'waiter',
+				password: undefined
+			}];
+			const result = await services.getAssignments();
+			result.forEach(assignment => (assignment.password = undefined));
+			assert.deepEqual(expected, result);
+		});
 	});
 
 	// describe('', function () {
