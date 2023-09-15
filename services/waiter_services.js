@@ -1,6 +1,10 @@
+import bcrypt from "bcrypt";
+
 export default function (db, schema) {
 	async function getUsers(username, password) {
 		const query = `SELECT * FROM ${schema}.users`;
+
+		if (!username && !password) { return await db.manyOrNone(query) }
 
 		let clause1 = '';
 		if (username) { clause1 = ` WHERE username = '${username}'` }
@@ -31,8 +35,8 @@ export default function (db, schema) {
 	}
 
 	async function getAssignments(columns, user_id, order_by) {
-		// Uncomment next line if user_id and day_id is needed
-		if (columns) { columns += `, ${schema}.users.user_id, ${schema}.days.day_id`; }
+		if (columns && columns.includes('user_id')) { columns = columns.replace('user_id', `${schema}.users.user_id`) }
+		if (columns && columns.includes('day_id')) { columns = columns.replace('day_id', `${schema}.days.day_id`) }
 
 		const query = `SELECT ${columns || '*'} FROM ${schema}.assignments`;
 		const join1 = ` JOIN ${schema}.days ON ${schema}.days.day_id = ${schema}.assignments.day_id`;
@@ -41,18 +45,29 @@ export default function (db, schema) {
 		let clause = '';
 		if (user_id) { clause = ` WHERE ${schema}.users.user_id = ${user_id}` }
 
-		// The order_by parameter only works for 'day' or 'user'
+		// The order_by parameter only works for strings 'day' or 'user'
 		let order = '';
 		if (order_by) { order = ` ORDER BY ${schema}.${order_by}s.${order_by}_id` }
 
 		return await db.manyOrNone(query + join1 + join2 + clause + order);
 	}
 
+	async function isAssigned(user_id, day_id) {
+		// select exists(select 1 from table_name where id = 12)
+		// select exists(select true from table_name where id = 12)
+		const subquery = `SELECT true FROM ${schema}.assignments`;
+		const clause = `WHERE user_id = ${user_id} AND day_id = ${day_id}`;
+		const query = `SELECT EXISTS(${subquery} ${clause})`;
+
+		return (await db.one(query)).exists;
+	}
+
 	async function setDay(user_id, day_id) {
 		const query = `INSERT INTO ${schema}.assignments (user_id, day_id)`;
 		const values = ` VALUES (${user_id}, ${day_id})`;
+		const conflict = ` ON CONFLICT DO NOTHING`;
 
-		await db.none(query + values);
+		await db.none(query + values + conflict);
 	}
 
 	// Can be used to reset table if no parameters are provided
@@ -71,22 +86,36 @@ export default function (db, schema) {
 	}
 
 	async function addUser(user) {
-		const query = `INSERT INTO ${schema}.users (username, full_name, role, password, salt)`;
-		const values = ` VALUES ('${user.username}', '${user.full_name}', '${user.role}', '${user.password}', '${user.salt}')`;
-		await db.none(query + values);
+		const query = `INSERT INTO ${schema}.users (username, full_name, role, password)`;
+		const values = ` VALUES ('${user.username}', '${user.full_name}', '${user.role}', '${await hash(user.password)}')`;
+		const clause = ` RETURNING user_id`;
+		return await db.oneOrNone(query + values + clause);
 	}
 
-	async function removeUser(user_id) {
-		const query1 = `DELETE FROM ${schema}.assignments CASCADE WHERE user_id = ${user_id}`;
-		await db.none(query1);
+	async function removeUsers(user_id) {
+		const query = `DELETE FROM ${schema}.users`;
 
-		const query2 = `DELETE FROM ${schema}.users CASCADE WHERE user_id = ${user_id}`;
-		await db.none(query2);
+		let clause = '';
+		if (user_id) { clause = ` WHERE user_id = ${user_id}` }
+
+		const restart = `; ALTER SEQUENCE ${schema}.users_user_id_seq RESTART WITH 1;`
+
+		await db.none(query + clause + restart);
 	}
 
 	async function resetAssignments() {
 		const query = `TRUNCATE TABLE ${schema}.assignments`;
 		await db.none(query);
+	}
+
+	async function hash(password) {
+		let password_hash = '';
+		while (password_hash.length !== 60) { password_hash = await bcrypt.hash(password, 10) }
+		return password_hash;
+	}
+
+	async function verify(password, password_hash) {
+		return await bcrypt.compare(password, password_hash);
 	}
 
 	function week() {
@@ -103,12 +132,16 @@ export default function (db, schema) {
 		getDays,
 		getDay: getDays,
 		getAssignments,
+		isAssigned,
 		setDay,
 		unsetDays,
 		unsetDay: unsetDays,
 		addUser,
-		removeUser,
+		removeUsers,
+		removeUser: removeUsers,
 		resetAssignments,
+		hash,
+		verify,
 		week
 	};
 };

@@ -1,4 +1,5 @@
 import promise from "pg-promise";
+import "dotenv/config";
 
 export default function Database() {
 	const pgp = promise();
