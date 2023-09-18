@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { randomBytes } from 'crypto';
 import { services } from '../index.js';
 const router = Router();
 
@@ -47,7 +46,7 @@ router.get('/dashboard', async (req, res) => {
 		};
 
 		res.render('dashboard', {
-			title: 'Admin Dashboard',
+			title: 'Dashboard',
 			admin: true,
 			nav,
 			user,
@@ -117,23 +116,20 @@ router.get('/waiters/add', (req, res) => {
 router.post('/waiters/add', async (req, res) => {
 	if (!req.session.role) { res.redirect('/') }
 
-	const new_user = {
-		username: req.body.username,
-		full_name: req.body.full_name,
-		role: req.body.role,
-		password: req.body.password,
-		salt: randomBytes(8).toString('hex')
-	}
-	const confirm = req.body.confirm_password;
-	const user_data = await services.getUser(new_user.username);
-
-	if (user_data) {
-		req.flash('error', "The username already exists");
-		res.redirect('/admin/waiters/add');
-	} else if (new_user.password !== confirm) {
+	if (req.body.password !== req.body.confirm_password) {
 		req.flash('error', "Passwords don't match");
 		res.redirect('/admin/waiters/add');
+	} else if (await services.getUser(req.body.username)) {
+		req.flash('error', "The username already exists");
+		res.redirect('/admin/waiters/add');
 	} else {
+		const new_user = {
+			username: req.body.username,
+			full_name: req.body.full_name,
+			role: req.body.role,
+			password: req.body.password
+		}
+
 		await services.addUser(new_user);
 		res.redirect('/admin/waiters');
 	}

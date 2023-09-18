@@ -79,6 +79,15 @@ a {
 	color: inherit;
 }
 
+.waiters a:hover {
+	color: var(--error-fg);
+	font-weight: bold;
+}
+
+.waiters button:hover {
+	background: var(--error-bg);
+}
+
 button,
 input,
 select {
@@ -99,12 +108,8 @@ button:active {
 	filter: brightness(0.5);
 }
 
-/* .day button {
-	/* background: none; */
-} */
-
 select {
-	text-align-last: auto;
+	text-align-last: center;
 }
 
 .view {
@@ -142,6 +147,7 @@ select {
 
 .flex.justify {
 	justify-content: center;
+	justify-items: center;
 }
 
 .flex.between {
@@ -152,12 +158,13 @@ select {
 	justify-content: space-evenly;
 }
 
-.flex.stretch {
-	flex: 1;
-}
-
 .flex.align {
 	align-items: center;
+	align-content: center;
+}
+
+.flex.stretch {
+	flex: 1;
 }
 
 .center {
@@ -171,9 +178,7 @@ select {
 /********** DASHBOARD **********/
 
 .day {
-	background: #fff4;
 	border: 1px solid var(--secondary-fg);
-	/* border-radius: 0.5rem; */
 
 	width: 12%;
 	min-width: 10rem;
@@ -191,11 +196,21 @@ select {
 	background: var(--error-bg);
 }
 
+.waiters {
+	width: 100%;
+	max-width: 36rem;
+}
+
+.waiters .waiter {
+	width: 30%;
+	min-width: fit-content;
+}
+
 /********** MESSAGES **********/
 
 .message {
-	border-radius: 0.5em;
 	border: var(--message-border) solid black;
+	border-radius: 0.5em;
 
 	width: fit-content;
 	max-width: 100%;

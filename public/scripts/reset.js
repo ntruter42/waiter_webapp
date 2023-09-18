@@ -3,7 +3,7 @@ window.addEventListener('load', () => {
 
 	if (reset) {
 		reset.addEventListener('click', (event) => {
-			if (!window.confirm("Are you sure you want to start a new week?")) {
+			if (!window.confirm("Are you sure you want to reset?")) {
 				event.preventDefault();
 			}
 		});

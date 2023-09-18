@@ -2,11 +2,14 @@
 
 	{{!-------------------- ADMIN DASHBOARD ------------------}}
 
-	{{#if admin}}
 	<h1>{{title}} - {{user.full_name}}</h1>
 
-	<h2>Week {{week}} - Availability Schedule</h2>
+	{{#if message.text}}
+	<div class="{{message.type}} message">{{message.text}}</div>
+	{{/if}}
 
+	{{#if admin}}
+	<h2>Week {{week}} - Availability Schedule</h2>
 	<form action="/unset" method="post">
 		<div class="flex row gap wrap justify container week">
 			{{#each days}}
@@ -15,9 +18,10 @@
 
 				<div class="flex col gap align waiters">
 					{{#each waiters}}
-					<a href="/admin/unset/{{../day_id}}/{{this.user_id}}"
-						onclick="return confirm('Remove {{this.full_name}} from {{../day_name}}?')" title="Click to remove {{this.full_name}} from {{../day_name}}">{{this.full_name}}</a>
-					{{!-- <button formaction="/admin/unset/{{day_name}}/{{this}}" class="waiter">{{this}}</button> --}}
+					<a href="#" title="Click to remove {{this.full_name}} from {{../day_name}}"
+						onclick="if (confirm('Remove {{this.full_name}} from {{../day_name}}?')) window.location.href = '/admin/unset/{{../day_id}}/{{this.user_id}}';">
+						{{this.full_name}}
+					</a>
 					{{/each}}
 				</div>
 			</div>
@@ -26,7 +30,7 @@
 	</form>
 
 	<form action="/reset" method="post">
-		<button type="submit" name="reset">START NEW WEEK</button>
+		<button type="submit" onclick="return confirm('Empty roster and start new week?')">START NEW WEEK</button>
 	</form>
 
 	<div class="flex row gap wrap justify container">
@@ -43,12 +47,6 @@
 	{{!-------------------- WAITER DASHBOARD ------------------}}
 
 	{{#if waiter}}
-	<h1>{{title}} - {{user.full_name}}</h1>
-
-	{{#if message.text}}
-	<div class="{{message.type}} message">{{message.text}}</div>
-	{{/if}}
-
 	<h2>Week {{week}} - Set Your Availability</h2>
 	<form class="flex row gap wrap justify container week" action="/add" method="post">
 		{{#each days}}

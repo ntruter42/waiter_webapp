@@ -7,7 +7,18 @@ router.get('/dashboard', (req, res) => {
 })
 
 router.get('/waiters', (req, res) => {
-	req.flash('error', "Sign in to add waiters");
+	res.redirect('/');
+})
+
+router.get('/add', (req, res) => {
+	res.redirect('/');
+})
+
+router.get('/unset/:day_id/:user_id', (req, res) => {
+	res.redirect('/');
+})
+
+router.get('/waiters', (req, res) => {
 	res.redirect('/');
 })
 

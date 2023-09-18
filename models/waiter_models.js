@@ -1,13 +1,16 @@
 export default () => {
-	class Waiter {
-		constructor(username) {
+	class User {
+		constructor(username, full_name, role, password) {
 			this.username = username;
+			this.full_name = full_name;
+			this.role = role;
+			this.password = password;
 		}
 	}
 
 	class Day {
 		constructor(day) {
-			this.day = week[day];
+			this.day = day;
 		}
 
 		name() {
@@ -32,7 +35,7 @@ export default () => {
 	}
 
 	return {
-		Day,
-		Waiter
+		User,
+		Day
 	}
 }

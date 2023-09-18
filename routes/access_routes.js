@@ -2,11 +2,9 @@ import { Router } from 'express';
 import { services } from '../index.js';
 const router = Router();
 
-router.get('/', (req, res, next) => {
-	if (req.session.role === 'admin') {
-		res.redirect('/admin/dashboard');
-	} else if (req.session.role === 'waiter') {
-		res.redirect('/waiter/dashboard');
+router.get('/', (req, res) => {
+	if (req.session.role) {
+		res.redirect(`/${req.session.role}/dashboard`);
 	} else {
 		res.redirect('/login');
 	}
@@ -14,7 +12,6 @@ router.get('/', (req, res, next) => {
 
 router.get('/login', async (req, res) => {
 	const nav = [
-		{ text: 'Home', link: '/' },
 		{ text: 'Dashboard', link: `/${req.session.role}/dashboard` }
 	];
 
@@ -38,17 +35,14 @@ router.get('/login', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-	const username = req.body.username;
-	const password = req.body.password;
-	const user = await services.getUser(username, password);
+	const user = await services.getUser(req.body.username);
 
-	if (user) {
+	if (user && await services.verify(req.body.password, user.password)) {
 		req.session.user_id = user.user_id;
 		req.session.full_name = user.full_name;
 		req.session.role = user.role;
 	} else {
 		req.flash('error', "The username or password entered is incorrect");
-		req.session.role = undefined;
 	}
 
 	res.redirect('/');

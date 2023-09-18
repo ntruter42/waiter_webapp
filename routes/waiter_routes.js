@@ -41,14 +41,14 @@ router.get('/dashboard', async (req, res) => {
 		}
 
 		days.forEach(day => {
-			if (day.count >= 6 && day.action === 'set') {
+			if (day.count >= 6 && (day.action === 'set' || day.action === 'lock')) {
 				day.status = 'overbooked';
 				day.action = 'full';
 			}
 		});
 
 		const nav = [
-			{ text: 'Home', link: '/' },
+			{ text: 'Dashboard', link: `/${req.session.role}/dashboard` },
 			{ text: 'Log Out', link: '/logout' }
 		];
 
@@ -64,7 +64,7 @@ router.get('/dashboard', async (req, res) => {
 		};
 
 		res.render('dashboard', {
-			title: 'Waiter Dashboard',
+			title: 'Dashboard',
 			waiter: true,
 			nav,
 			user,
