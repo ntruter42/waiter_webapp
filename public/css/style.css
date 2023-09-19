@@ -5,20 +5,21 @@
 	--primary-fg: #000;
 	--secondary-bg: #fffa;
 	--secondary-fg: #000a;
+	--dimmed-bg: #fff8;
+	--dimmed-fg: #0008;
 
 	--accent-1: #bed2e4ff;
 	--accent-2: #c2dcf0ff;
 	--accent-3: #d7e4f0ff;
 	--accent-4: #e4f9feff;
 
-	--error-bg: #e88a;
+	--error-bg: #e888;
 	--error-fg: #c00;
-	--warning-bg: #fc8a;
-	--warning-fg: #c80;
-	--success-bg: #8c8a;
-	--success-fg: #0c0;
+	--warning-bg: #fc88;
+	--warning-fg: #a60;
+	--success-bg: #8c88;
+	--success-fg: #080;
 
-	--plate-border: 0.0625em;
 	--message-border: 0.125em;
 
 	font-size: 20px;
@@ -80,12 +81,15 @@ a {
 }
 
 .waiters a:hover {
-	color: var(--error-fg);
-	font-weight: bold;
+	text-decoration: line-through;
+	text-decoration-color: var(--error-fg);
+	text-decoration-thickness: 0.125rem;
 }
 
 .waiters button:hover {
-	background: var(--error-bg);
+	text-decoration: line-through;
+	text-decoration-color: var(--error-fg);
+	text-decoration-thickness: 0.125rem;
 }
 
 button,
@@ -93,23 +97,32 @@ input,
 select {
 	outline: 1px solid var(--secondary-fg);
 	text-align: center;
+	min-height: 2rem;
 }
 
 button {
 	background: var(--secondary-bg);
 	padding: 0.25rem 0.5rem;
+	box-shadow: 0 2px;
 }
 
 button:hover {
 	filter: brightness(0.75);
+	box-shadow: 0 3px;
 }
 
 button:active {
 	filter: brightness(0.5);
+	box-shadow: 0 0;
+}
+
+input:focus {
+	outline: 3px solid var(--primary-fg);
 }
 
 select {
-	text-align-last: center;
+	padding-left: 0.5rem;
+	padding-top: 0.125rem;
 }
 
 .view {
@@ -163,6 +176,10 @@ select {
 	align-content: center;
 }
 
+.message.align {
+	align-self: center;
+}
+
 .flex.stretch {
 	flex: 1;
 }
@@ -209,6 +226,8 @@ select {
 /********** MESSAGES **********/
 
 .message {
+	text-shadow: 0 0 0.5rem white;
+
 	border: var(--message-border) solid black;
 	border-radius: 0.5em;
 
@@ -232,6 +251,7 @@ select {
 .message.success {
 	background: var(--success-bg);
 	color: var(--success-fg);
+	text-shadow: none;
 	border: var(--message-border) solid var(--success-fg);
 }
 

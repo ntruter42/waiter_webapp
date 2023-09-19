@@ -21,6 +21,7 @@ CREATE TABLE test.users (
 CREATE TABLE test.assignments (
 	user_id INT NOT NULL,
 	day_id INT NOT NULL,
+	-- confirm BOOLEAN DEFAULT false,
 	PRIMARY KEY (user_id, day_id),
 	FOREIGN KEY (user_id) REFERENCES test.users(user_id) ON DELETE CASCADE,
 	FOREIGN KEY (day_id) REFERENCES test.days(day_id) ON DELETE CASCADE

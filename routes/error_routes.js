@@ -10,15 +10,11 @@ router.get('/waiters', (req, res) => {
 	res.redirect('/');
 })
 
-router.get('/add', (req, res) => {
+router.get('/waiters/add', (req, res) => {
 	res.redirect('/');
 })
 
-router.get('/unset/:day_id/:user_id', (req, res) => {
-	res.redirect('/');
-})
-
-router.get('/waiters', (req, res) => {
+router.get('/waiters/unset/:day_id/:user_id', (req, res) => {
 	res.redirect('/');
 })
 

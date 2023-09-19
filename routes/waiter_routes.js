@@ -5,15 +5,15 @@ const router = Router();
 router.get('/dashboard', async (req, res) => {
 	if (!req.session.role) { res.redirect('/') }
 	else {
-		const assignments = await services.getAssignments('day_name, full_name');
+		const assignments = await services.getAssignments('day_name, user_id, full_name');
 		const days = [
-			{ day_name: 'Monday', day_id: 1 },
-			{ day_name: 'Tuesday', day_id: 2 },
-			{ day_name: 'Wednesday', day_id: 3 },
-			{ day_name: 'Thursday', day_id: 4 },
-			{ day_name: 'Friday', day_id: 5 },
-			{ day_name: 'Saturday', day_id: 6 },
-			{ day_name: 'Sunday', day_id: 7 }
+			{ day_id: 1, day_name: 'Monday' },
+			{ day_id: 2, day_name: 'Tuesday' },
+			{ day_id: 3, day_name: 'Wednesday' },
+			{ day_id: 4, day_name: 'Thursday' },
+			{ day_id: 5, day_name: 'Friday' },
+			{ day_id: 6, day_name: 'Saturday' },
+			{ day_id: 7, day_name: 'Sunday' }
 		];
 
 		days.forEach(day => {

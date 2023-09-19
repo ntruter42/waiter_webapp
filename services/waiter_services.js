@@ -15,11 +15,14 @@ export default function (db, schema) {
 		return await db.oneOrNone(query + clause1 + clause2);
 	}
 
-	async function getWaiters() {
+	async function getWaiters(user_id) {
 		const query = `SELECT * FROM ${schema}.users`;
-		const clause = ` WHERE role = 'waiter'`;
+		const clause1 = ` WHERE role = 'waiter'`;
 
-		return await db.manyOrNone(query + clause);
+		let clause2 = '';
+		if (user_id) { clause2 = ` AND user_id = ${user_id}` }
+
+		return await db.manyOrNone(query + clause1 + clause2);
 	}
 
 	async function getDays(day_id) {
@@ -96,9 +99,9 @@ export default function (db, schema) {
 		const query = `DELETE FROM ${schema}.users`;
 
 		let clause = '';
+		let restart = '';
 		if (user_id) { clause = ` WHERE user_id = ${user_id}` }
-
-		const restart = `; ALTER SEQUENCE ${schema}.users_user_id_seq RESTART WITH 1;`
+		else { restart = `; ALTER SEQUENCE ${schema}.users_user_id_seq RESTART WITH 1;` }
 
 		await db.none(query + clause + restart);
 	}
@@ -129,6 +132,7 @@ export default function (db, schema) {
 		getUsers,
 		getUser: getUsers,
 		getWaiters,
+		getWaiter: getWaiters,
 		getDays,
 		getDay: getDays,
 		getAssignments,
