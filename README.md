@@ -1,7 +1,7 @@
 # waiter_webapp
 [![Unit Tests](https://github.com/ntruter42/waiter_webapp/actions/workflows/node.js.yml/badge.svg)](https://github.com/ntruter42/waiter_webapp/actions/workflows/node.js.yml)
 
-### Deployment: https://waiter-webapp-frankfurt.onrender.com/
+### [Waiter Webapp](https://waiter-webapp-frankfurt.onrender.com/)
 
 **Username**: gramsay247
 
